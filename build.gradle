@@ -50,7 +50,7 @@ def dlDepsC = [
 
 def dlDepsS = [
 	new Tuple(
-		'https://build.true-games.org/job/RakNetServer/29/artifact/target/RakNetServer.jar',
+		'https://jenkins.artuto.tk/job/RakNet/lastSuccessfulBuild/artifact/target/RakNetServer.jar',
 		'raknetserver-7.jar'
 	),
 	new Tuple(
@@ -143,6 +143,6 @@ shadowJar {
 
 compileJava.dependsOn(clean)
 compileJava.dependsOn(updateLibs)
-jar.enabled = false
+jar.enabled = true
 jar.finalizedBy(shadowJar)
 shadowJar.finalizedBy(copyFinalJarToTarget)
