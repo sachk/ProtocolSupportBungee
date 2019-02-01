@@ -3,10 +3,15 @@ package protocolsupport.injector.pe;
 import net.md_5.bungee.BungeeCord;
 import raknetserver.RakNetServer;
 
+import java.net.InetSocketAddress;
+
 public class PEProxyServer {
 
+	private final InetSocketAddress host = new InetSocketAddress(BungeeCord.getInstance().getConfig().getListeners().iterator().next().getHost().getHostName(),
+		BungeeCord.getInstance().getConfig().getListeners().iterator().next().getQueryPort());
+
 	private final RakNetServer peserver = new RakNetServer(
-		BungeeCord.getInstance().getConfig().getListeners().iterator().next().getHost(),
+		host,
 		new PEProxyServerInfoHandler(),
 		channel -> {
 			PEQueryHandler queryHandler = new PEQueryHandler();
