@@ -39,16 +39,6 @@ public class NetworkDataCache {
 		this.startGameData = startGameData;
 	}
 
-	private int realDimension = 0;
-
-	public int getRealDimension() {
-		return realDimension;
-	}
-
-	public void setRealDimension(int realDimension) {
-		this.realDimension = realDimension;
-	}
-
 	protected String locale = "en_us";
 
 	public void setLocale(String locale) {
@@ -99,6 +89,26 @@ public class NetworkDataCache {
 
 	public void setSkinGeometry(String skinGeometry) {
 		this.skinGeometry = skinGeometry;
+	}
+
+	private float x, y, z;
+
+	public float getX() {
+		return x;
+	}
+
+	public float getY() {
+		return y;
+	}
+
+	public float getZ() {
+		return z;
+	}
+
+	public void setSpawnLocation(float x, float y, float z) {
+		this.x = x;
+		this.y = y;
+		this.z = z;
 	}
 
 }
