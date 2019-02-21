@@ -56,6 +56,7 @@ public class PEProxyServerConnection extends SimpleChannelInboundHandler<ByteBuf
 
 	public static Channel connectToServer(Channel peclientchannel, ByteBuf handshakepacket) {
 		InetSocketAddress remote = (InetSocketAddress) peclientchannel.remoteAddress();
+		System.out.println("REMOTE AT PEPSC: "+remote);
 		handshakepacket.readerIndex(0);
 		return new Bootstrap()
 		.channel(NioSocketChannel.class)
