@@ -206,7 +206,7 @@ public class InitialPacketDecoder extends SimpleChannelInboundHandler<ByteBuf> {
 		ConnectionImpl connection = prepare(channel, version);
 		IPipeLineBuilder builder = IPipeLineBuilder.BUILDERS.get(connection.getVersion());
 		if(builder == null)
-			return;
+			builder = IPipeLineBuilder.BUILDERS.get(ProtocolVersion.MINECRAFT_1_13_2);
 		builder.buildBungeeClientCodec(channel, connection);
 		if (encapsulatedinfo == null) {
 			builder.buildBungeeClientPipeLine(channel, connection);
