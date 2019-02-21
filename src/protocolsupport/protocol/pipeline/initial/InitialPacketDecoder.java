@@ -205,6 +205,8 @@ public class InitialPacketDecoder extends SimpleChannelInboundHandler<ByteBuf> {
 	protected void setProtocol(Channel channel, ProtocolVersion version) {
 		ConnectionImpl connection = prepare(channel, version);
 		IPipeLineBuilder builder = IPipeLineBuilder.BUILDERS.get(connection.getVersion());
+		if(builder == null)
+			return;
 		builder.buildBungeeClientCodec(channel, connection);
 		if (encapsulatedinfo == null) {
 			builder.buildBungeeClientPipeLine(channel, connection);
