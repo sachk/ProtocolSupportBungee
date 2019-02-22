@@ -8,11 +8,8 @@ import java.net.InetSocketAddress;
 
 public class PEProxyServer {
 
-	private InetSocketAddress host;
-	{
-		ListenerInfo listener = BungeeCord.getInstance().getConfig().getListeners().iterator().next();
-		host = new InetSocketAddress(listener.getHost().getHostName(), listener.getQueryPort());
-	}
+	private ListenerInfo listener = BungeeCord.getInstance().getConfig().getListeners().iterator().next();
+	private InetSocketAddress host = new InetSocketAddress(listener.getHost().getHostName(), listener.getQueryPort());
 
 	private final RakNetServer peserver = new RakNetServer(
 		host,
