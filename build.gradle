@@ -51,7 +51,7 @@ def dlDepsC = [
 def dlDepsS = [
 	new Tuple(
 		'https://jenkins.artuto.tk/job/RakNet/lastSuccessfulBuild/artifact/target/RakNetServer.jar',
-		'raknetserver-8.jar'
+		'raknetserver-0.2.jar'
 	),
 	new Tuple(
 		'https://build.true-games.org/job/UdpServerSocketChannel/11/artifact/target/UdpServerSocketChannel.jar',
