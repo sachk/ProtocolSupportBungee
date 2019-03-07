@@ -1,13 +1,10 @@
 package protocolsupport.injector.pe;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import net.md_5.bungee.BungeeCord;
-import raknetserver.RakNetServer;
 
 public class PEProxyNetworkManager extends SimpleChannelInboundHandler<ByteBuf> {
 
@@ -16,13 +13,12 @@ public class PEProxyNetworkManager extends SimpleChannelInboundHandler<ByteBuf> 
 	protected Channel serverconnection;
 
 	@Override
-	public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-		if (msg instanceof RakNetServer.BackPressure && serverconnection != null) {
-			serverconnection.config().setAutoRead(RakNetServer.BackPressure.OFF.equals(msg));
-			return;
-		}
-		super.channelRead(ctx, msg);
-	}
+    public void channelWritabilityChanged(ChannelHandlerContext ctx) {
+	    if (serverconnection != null) {
+            serverconnection.config().setAutoRead(ctx.channel().isWritable());
+        }
+        ctx.fireChannelWritabilityChanged();
+    }
 
 	@Override
 	protected void channelRead0(ChannelHandlerContext ctx, ByteBuf bytebuf) {
@@ -33,13 +29,6 @@ public class PEProxyNetworkManager extends SimpleChannelInboundHandler<ByteBuf> 
 			serverconnection.writeAndFlush(cbytebuf)
                     .addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE);
 		}
-	}
-
-	@Override
-	public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-		BungeeCord.getInstance().getLogger().warning("PE proxy client connection exception occurred");
-		cause.printStackTrace();
-		ctx.channel().close();
 	}
 
 	protected void closeServerConnection() {
@@ -60,4 +49,5 @@ public class PEProxyNetworkManager extends SimpleChannelInboundHandler<ByteBuf> 
 		closeServerConnection();
 		super.channelUnregistered(ctx);
 	}
+
 }
