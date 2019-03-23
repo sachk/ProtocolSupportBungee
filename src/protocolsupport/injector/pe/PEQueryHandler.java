@@ -27,7 +27,7 @@ public class PEQueryHandler extends QueryHandler {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        ctx.fireExceptionCaught(cause);
+       // ctx.fireExceptionCaught(cause);
     }
 
 }
