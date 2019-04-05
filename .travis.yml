@@ -1,8 +1,11 @@
 language: java
-install: true
+
+notifications:
+  email: false
 
 jdk:
-  - oraclejdk8
+- oraclejdk8
 
-script:
-  - ./gradlew build
+cache:
+  directories:
+  - $HOME/.m2

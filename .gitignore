@@ -25,5 +25,5 @@ out/
 # IntelliJ
 .idea/
 *.iml
-/dllibsc/
-/dllibss/
+
+dependency-reduced-pom.xml
