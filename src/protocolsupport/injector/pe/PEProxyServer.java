@@ -4,10 +4,11 @@ import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.group.ChannelGroup;
 import io.netty.channel.group.DefaultChannelGroup;
-
 import io.netty.channel.socket.DatagramPacket;
 import io.netty.channel.unix.UnixChannelOption;
 import io.netty.handler.timeout.ReadTimeoutException;
+import io.netty.handler.timeout.ReadTimeoutHandler;
+import io.netty.util.ReferenceCountUtil;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.config.ListenerInfo;
 
@@ -52,15 +53,15 @@ public class PEProxyServer {
         .option(RakNet.SERVER_ID, UUID.randomUUID().getMostSignificantBits())
         .option(RakNet.METRICS, PERakNetMetrics.INSTANCE)
         .childOption(RakNet.USER_DATA_ID, 0xFE)
-        .handler(new RakNetServer.DefaultIoInitializer(new ChannelInitializer() {
+        .handler(new ChannelInitializer() {
             protected void initChannel(Channel channel) {
                 channel.pipeline()
                         .addLast(new PEProxyServerInfoHandler(bungee, listenerInfo))
                         .addLast(new PEQueryHandler(bungee, listenerInfo))
                         .addLast(new PluginLoggerInitializer());
             }
-        }))
-        .childHandler(new RakNetServer.DefaultChildInitializer(new ChannelInitializer() {
+        })
+        .childHandler(new ChannelInitializer() {
             protected void initChannel(Channel channel) {
                 channel.pipeline()
                         .addLast(PECompressor.NAME, new PECompressor())
@@ -68,8 +69,12 @@ public class PEProxyServer {
                         .addLast(PEDimSwitchLock.NAME, new PEDimSwitchLock())
                         .addLast(PEProxyNetworkManager.NAME, new PEProxyNetworkManager())
                         .addLast(new PluginLoggerInitializer());
+
+                channel.eventLoop().execute(() -> {
+                    channel.pipeline().addFirst(new ReadTimeoutHandler(5));
+                });
             }
-        }));
+        });
         final Channel channel = bootstrap.bind(listenerInfo.getHost()).channel();
         channel.closeFuture().addListener(v -> logger.warning("Server channel closed: " + channel));
         channels.add(channel);
@@ -100,6 +105,7 @@ public class PEProxyServer {
                     public void channelRead(ChannelHandlerContext ctx, Object msg) {
                         if (msg instanceof DatagramPacket && ctx.channel() instanceof RakNetServerChannel) {
                             logger.log(Level.FINER, "Stray datagram sent to server channel handler");
+                            ReferenceCountUtil.safeRelease(msg);
                         } else {
                             ctx.fireChannelRead(msg);
                         }
